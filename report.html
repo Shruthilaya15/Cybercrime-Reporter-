@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Report Cybercrime</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      background: #eaf6fb;
+      color: #333;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .navbar-custom {
+      background: #0a183d;
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .navbar-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+    .navbar-menu {
+      display: flex;
+      gap: 32px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .navbar-menu a {
+      color: #b2c6f5;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .navbar-menu a:hover {
+      color: #00e6fb;
+    }
+    .main-content {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px 0 0;
+    }
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #0a183d;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .page-title span {
+      color: #00e6fb;
+    }
+    .report-form {
+      background: #f8f9fa;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    .form-label {
+      color: #0a183d;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .form-control {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px 15px;
+    }
+    .form-control:focus {
+      box-shadow: 0 0 0 3px rgba(0, 230, 251, 0.1);
+      border-color: #00e6fb;
+    }
+    .evidence-section {
+      background: #fff;
+      border: 2px dashed #00e6fb;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+    .evidence-section:hover {
+      border-color: #0a183d;
+    }
+    .evidence-icon {
+      font-size: 3rem;
+      color: #00e6fb;
+      margin-bottom: 15px;
+    }
+    .evidence-text {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .file-input {
+      display: none;
+    }
+    .file-label {
+      background: #0a183d;
+      color: #fff;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .file-label:hover {
+      background: #00e6fb;
+      color: #0a183d;
+    }
+    .selected-files {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .file-item {
+      background: #f8f9fa;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .file-item i {
+      color: #00e6fb;
+      margin-right: 10px;
+    }
+    .remove-file {
+      color: #dc3545;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .submit-btn {
+      background: #0a183d;
+      color: #fff;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    .submit-btn:hover {
+      background: #00e6fb;
+      color: #0a183d;
+    }
+    .logout-btn {
+      background: transparent;
+      color: #0a183d;
+      border: 2px solid #0a183d;
+      padding: 10px 25px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background: #0a183d;
+      color: #fff;
+    }
+    .hamburger {
+      position: relative;
+      left: 0;
+      margin: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      z-index: 2001;
+    }
+    .hamburger span {
+      display: block;
+      height: 5px;
+      width: 100%;
+      background: #0a183d;
+      border-radius: 3px;
+      margin-bottom: 4px;
+    }
+    .hamburger span:last-child {
+      margin-bottom: 0;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -340px;
+      width: 340px;
+      height: 100vh;
+      background: #fff;
+      color: #0a183d;
+      box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+      z-index: 2002;
+      transition: left 0.3s;
+      padding: 0;
+      overflow-y: auto;
+    }
+    .sidebar.open {
+      left: 0;
+    }
+    .sidebar-header {
+      padding: 24px 24px 12px 24px;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
+    .sidebar-header h4 {
+      margin: 0 0 12px 0;
+      font-weight: 700;
+      color: #0a183d;
+    }
+    .sidebar-header .close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      font-size: 2rem;
+      color: #0a183d;
+      cursor: pointer;
+    }
+    #law-search {
+      margin-bottom: 10px;
+    }
+    #law-list {
+      list-style: none;
+      padding: 0 24px 0 24px;
+      margin: 0;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    #law-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      color: #0a183d;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    #law-list li:hover {
+      background: #eaf6fb;
+    }
+    .law-detail {
+      padding: 18px 24px;
+      color: #333;
+      font-size: 0.98rem;
+      background: #f8f9fa;
+      border-radius: 0 0 10px 10px;
+      min-height: 60px;
+      margin: 18px 0 0 0;
+    }
+    .title-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      width: 100%;
+      padding-left: 0;
+    }
+    .hamburger {
+      position: relative;
+      left: 0;
+      margin: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      z-index: 2001;
+    }
+    .title-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .page-title {
+      margin: 0;
+      text-align: center;
+      color: #00e6fb;
+    }
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .page-title {
+      margin: 0;
+      text-align: center;
+    }
+    .hamburger.below-title {
+      width: 24px;
+      height: 24px;
+      margin-top: 8px;
+    }
+    .hamburger.below-title span {
+      height: 3px;
+      width: 100%;
+      background: #0a183d;
+      border-radius: 2px;
+      margin-bottom: 3px;
+    }
+    .hamburger.below-title span:last-child {
+      margin-bottom: 0;
+    }
+    .hamburger.under-navbar {
+      width: 36px;
+      height: 36px;
+      margin: 14px 0 0 0;
+      position: relative;
+      left: 0;
+      z-index: 2001;
+    }
+    .hamburger.under-navbar span {
+      height: 6px;
+      width: 100%;
+      background: #0a183d;
+      border-radius: 3px;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .hamburger.under-navbar span:last-child {
+      margin-bottom: 0;
+    }
+    .hamburger.under-navbar.top-left-hamburger {
+      position: absolute;
+      top: 70px;
+      left: 18px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      z-index: 2001;
+    }
+    @media (max-width: 768px) {
+      .main-content {
+        margin: 20px auto;
+        padding: 0 15px;
+      }
+      .report-form {
+        padding: 25px;
+      }
+      .page-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar-custom">
+    <div class="navbar-logo">CYBER CRIME REPORTING PORTAL</div>
+    <div class="navbar-menu">
+      <a href="/">Home</a>
+      <a href="/about">About Us</a>
+      <a href="/services">Services</a>
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+  <div class="hamburger under-navbar top-left-hamburger" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h4>Cyber Laws of India</h4>
+      <input type="text" id="law-search" class="form-control" placeholder="Search laws..." onkeyup="filterLaws()">
+      <span class="close-btn" onclick="toggleSidebar()">&times;</span>
+    </div>
+    <ul id="law-list">
+      <li onclick="showLawDetail('IT Act')">Information Technology Act, 2000 (Amended 2008)</li>
+      <li onclick="showLawDetail('IPC')">Indian Penal Code (IPC), 1860</li>
+      <li onclick="showLawDetail('Evidence Act')">Indian Evidence Act, 1872 (Amendments)</li>
+      <li onclick="showLawDetail('PDP Bill')">The Personal Data Protection Bill (Pending/Upcoming)</li>
+      <li onclick="showLawDetail('POCSO')">Protection of Children from Sexual Offences (POCSO) Act, 2012</li>
+    </ul>
+    <div id="law-detail" class="law-detail"></div>
+  </div>
+
+  <div class="main-content">
+    <div class="title-block">
+      <h1 class="page-title">Report Cybercrime</h1>
+    </div>
+    {% if success %}
+    <div class="alert alert-success text-center" style="font-size:1.2rem;font-weight:bold;">YOUR REPORT IS SUBMITTED SUCCESSFULLY</div>
+    {% endif %}
+    
+    <div class="report-form">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="mb-4">
+          <label class="form-label">Crime Type</label>
+          <input type="text" class="form-control" name="crime_type" placeholder="e.g., Online Fraud, Harassment, Identity Theft" required>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" name="description" rows="5" placeholder="Please provide a detailed description of the incident..." required></textarea>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label">Evidence of the Report</label>
+          <div class="evidence-section">
+            <div class="evidence-icon">
+              <i class="fas fa-file-pdf"></i>
+            </div>
+            <div class="evidence-text">
+              <strong>Upload Evidence (PDF documents only)</strong><br>
+              You can upload screenshots, transaction details, emails, or other relevant documents as PDF files.
+            </div>
+            <input type="file" class="file-input" id="evidence-files" name="evidence_files" accept=".pdf" multiple>
+            <label for="evidence-files" class="file-label">
+              <i class="fas fa-upload"></i> Choose PDF Files
+            </label>
+            <div class="selected-files" id="selected-files"></div>
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-paper-plane"></i> Submit Report
+        </button>
+      </form>
+    </div>
+    
+    <div class="text-center">
+      <a href="/logout" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('evidence-files').addEventListener('change', function(e) {
+      const files = e.target.files;
+      const selectedFilesDiv = document.getElementById('selected-files');
+      selectedFilesDiv.innerHTML = '';
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+          <div>
+            <i class="fas fa-file-pdf"></i>
+            ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+          </div>
+          <span class="remove-file" onclick="removeFile(${i})">
+            <i class="fas fa-times"></i>
+          </span>
+        `;
+        selectedFilesDiv.appendChild(fileItem);
+      }
+    });
+
+    function removeFile(index) {
+      const input = document.getElementById('evidence-files');
+      const dt = new DataTransfer();
+      const { files } = input;
+      
+      for (let i = 0; i < files.length; i++) {
+        if (i !== index) {
+          dt.items.add(files[i]);
+        }
+      }
+      
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change'));
+    }
+
+    function toggleSidebar() {
+      var sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+      document.getElementById('law-detail').innerHTML = '';
+      document.getElementById('law-search').value = '';
+      filterLaws();
+    }
+    function filterLaws() {
+      var input = document.getElementById('law-search');
+      var filter = input.value.toUpperCase();
+      var ul = document.getElementById('law-list');
+      var li = ul.getElementsByTagName('li');
+      for (var i = 0; i < li.length; i++) {
+        var txtValue = li[i].textContent || li[i].innerText;
+        li[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
+      }
+    }
+    function showLawDetail(law) {
+      var details = {
+        'IT Act': `
+<strong>Information Technology Act, 2000 (Amended 2008)</strong><br>India’s primary law dealing with cybercrimes and electronic commerce.<br><br>
+<u>Key Sections Related to Cybercrimes:</u>
+<ul style='margin-top:8px;'>
+  <li><b>Section 43:</b> Penalty for unauthorized access, damage to computer systems, or data theft.</li>
+  <li><b>Section 66:</b> Punishment for hacking and data breach.</li>
+  <li><b>Section 66C:</b> Punishment for identity theft.</li>
+  <li><b>Section 66D:</b> Punishment for cheating by personation using computer resources (e.g., online scams).</li>
+  <li><b>Section 66E:</b> Violation of privacy by capturing or transmitting private images.</li>
+  <li><b>Section 67:</b> Publishing or transmitting obscene material in electronic form.</li>
+  <li><b>Section 69:</b> Government powers to intercept, monitor, or decrypt digital information.</li>
+  <li><b>Section 70:</b> Declaration of "Protected Systems" (critical infrastructure).</li>
+  <li><b>Section 72:</b> Breach of confidentiality and privacy.</li>
+</ul>
+`,
+        'IPC': `
+<strong>Indian Penal Code (IPC), 1860</strong><br>Though older, several sections of the IPC apply to cybercrimes.<br><br>
+<u>Relevant IPC Sections:</u>
+<ul style='margin-top:8px;'>
+  <li><b>Section 419:</b> Cheating by impersonation (used in phishing cases).</li>
+  <li><b>Section 420:</b> Cheating and dishonestly inducing delivery of property (used for online frauds).</li>
+  <li><b>Section 463 – 471:</b> Forgery, making fake electronic records or signatures.</li>
+  <li><b>Section 500:</b> Criminal defamation online.</li>
+  <li><b>Section 509:</b> Word, gesture, or act intended to insult the modesty of a woman (used in cyberstalking, harassment).</li>
+  <li><b>Section 354D:</b> Stalking, including electronic stalking.</li>
+</ul>
+`,
+        'Evidence Act': `
+<strong>Indian Evidence Act, 1872 (Amendments)</strong><br>Allows electronic records and digital signatures to be used as evidence in court.<br><br>
+<u>Relevant Sections:</u>
+<ul style='margin-top:8px;'>
+  <li><b>Sections 65A & 65B:</b> Rules regarding admissibility of electronic evidence.</li>
+</ul>
+`,
+        'PDP Bill': `
+<strong>The Personal Data Protection Bill (Pending/Upcoming)</strong><br>Aims to regulate the collection, storage, and processing of personal data.<br><br>
+<ul style='margin-top:8px;'>
+  <li>Will define stricter penalties for data breaches, unauthorized access, and misuse of data.</li>
+  <li>Once enacted, it will bolster privacy rights and cybercrime enforcement.</li>
+</ul>
+`,
+        'POCSO': `
+<strong>Protection of Children from Sexual Offences (POCSO) Act, 2012</strong><br>Used in cases involving child pornography or exploitation through digital platforms.
+` 
+      };
+      document.getElementById('law-detail').innerHTML = details[law] || 'No details available.';
+    }
+  </script>
+</body>
+</html>
+
